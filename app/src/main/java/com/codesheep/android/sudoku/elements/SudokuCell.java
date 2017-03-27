@@ -32,4 +32,8 @@ public class SudokuCell {
     public int y() {
         return mY;
     }
+
+    public void clear() {
+        mValue = 0;
+    }
 }

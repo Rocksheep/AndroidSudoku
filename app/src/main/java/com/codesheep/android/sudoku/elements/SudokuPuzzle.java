@@ -31,11 +31,11 @@ public class SudokuPuzzle {
         boolean squareDuplicateFound = false;
         for (final SudokuCell cell : mCells) {
             // Check for duplicates in Row
-            if (cell.y() == givenCell.y() && cell.x() != givenCell.x() && cell.value() == givenCell.value()) {
+            if (cell.y() == givenCell.y() && cell != givenCell && cell.value() == givenCell.value()) {
                 return false;
             }
             // Check for duplicates in Column
-            if (cell.x() == givenCell.x() && cell.y() != givenCell.y() && cell.value() == givenCell.value()) {
+            if (cell.x() == givenCell.x() && cell != givenCell && cell.value() == givenCell.value()) {
                 return false;
             }
             // Check for duplicates in Square
@@ -43,7 +43,7 @@ public class SudokuPuzzle {
             int givenSquareY = givenCell.y() / 3;
             int cellSquareX = cell.x() / 3;
             int cellSquareY = cell.y() / 3;
-            if (cell.y() != givenCell.y() && cell.x() != givenCell.x() && cellSquareX == givenSquareX && cellSquareY == givenSquareY && cell.value() == givenCell.value()) {
+            if (cell != givenCell && cellSquareX == givenSquareX && cellSquareY == givenSquareY && cell.value() == givenCell.value()) {
                 Log.d(TAG, "Duplicate of " + givenCell.value() + " found in square " + givenSquareX + "," + givenSquareY);
                 squareDuplicateFound = true;
             }
@@ -58,11 +58,7 @@ public class SudokuPuzzle {
         return mCells.get(i);
     }
 
-    public void removeCell(SudokuCell cell) {
-        mCells.remove(cell);
-    }
-
-    public void removeCell(int cellIndex) {
-        mCells.remove(cellIndex);
+    public int size() {
+        return mCells.size();
     }
 }

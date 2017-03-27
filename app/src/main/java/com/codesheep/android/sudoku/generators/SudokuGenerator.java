@@ -26,37 +26,27 @@ public class SudokuGenerator {
             mSudokuPuzzle.addCell(new SudokuCell(i % 9, i / 9));
         }
         generateCells(0, random);
-
-        if (mSudokuPuzzle.isValid()) {
-            Log.d(TAG, "The generated puzzle is valid");
-        }
-        else {
-            Log.d(TAG, "The generated puzzle is invalid");
-        }
         return mSudokuPuzzle;
     }
 
     private boolean generateCells(int i, Random random) {
-        if (i >= 81) {
+        if (i >= mSudokuPuzzle.size()) {
             return true;
         }
         SudokuCell cell = mSudokuPuzzle.getCell(i);
         ArrayList<Integer> availableNumbers = generateValidRowNumbers();
 
-
-        while (availableNumbers.size() > 0) {
+        while (!availableNumbers.isEmpty()) {
             int index = random.nextInt(availableNumbers.size());
             int value = availableNumbers.get(index);
             availableNumbers.remove(index);
             cell.value(value);
-            if (mSudokuPuzzle.cellIsValid(cell)) {
+            if (mSudokuPuzzle.cellIsValid(cell) && generateCells(i + 1, random)) {
                 Log.d(TAG, "Cell is valid, moving to the next one");
-                if (generateCells(i + 1, random)) {
-                    return true;
-                }
+                return true;
             }
         }
-        cell.value(0);
+        cell.clear();
         Log.d(TAG, "No valid cell found. Reverting state");
         return false;
     }
