@@ -12,6 +12,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.codesheep.android.sudoku.elements.SudokuCell;
+import com.codesheep.android.sudoku.elements.SudokuPuzzle;
+import com.codesheep.android.sudoku.exceptions.NoSudokuGeneratorSpecifiedException;
+import com.codesheep.android.sudoku.generators.SudokuGenerator;
 
 public class SudokuGrid extends View {
 
@@ -19,6 +22,7 @@ public class SudokuGrid extends View {
     private Paint mPaint;
     private GestureDetector mGestureDetector;
     private float mCellWidth;
+    private SudokuPuzzle mPuzzle;
 
     private SudokuCell mSelectedCell;
 
@@ -40,8 +44,11 @@ public class SudokuGrid extends View {
     void init() {
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
+        mPaint.setAntiAlias(true);
 
         mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener());
+
+        mPuzzle = new SudokuGenerator().generate();
     }
 
     @Override
@@ -95,15 +102,6 @@ public class SudokuGrid extends View {
             mPaint.setColor(Color.argb(100, 102, 160, 255));
             canvas.drawRect(mSelectedCell.x() * mCellWidth, 0, (mSelectedCell.x() + 1) * mCellWidth, getMeasuredHeight(), mPaint);
             canvas.drawRect(0, mSelectedCell.y() * mCellWidth, getMeasuredWidth(), (mSelectedCell.y() + 1) * mCellWidth, mPaint);
-
-            // Draw a number to see what it would look like when the app is done! :D
-            mPaint.setColor(Color.parseColor("#666666"));
-            mPaint.setTextSize(60);
-            mPaint.setTextAlign(Paint.Align.CENTER);
-            mPaint.setFakeBoldText(true);
-            float textY = mSelectedCell.y() * mCellWidth + mCellWidth / 2 - (mPaint.descent() + mPaint.ascent()) / 2;
-            float textX = mSelectedCell.x() * mCellWidth + mCellWidth / 2;
-            canvas.drawText(Integer.toString(mSelectedCell.value()), textX, textY, mPaint);
         }
 
         // Draw that sweet sexy raster
@@ -128,6 +126,17 @@ public class SudokuGrid extends View {
             canvas.drawLine(0, i * mCellWidth, getMeasuredWidth(), i * mCellWidth, mPaint);
         }
 
+        for (final SudokuCell cell : mPuzzle.cells()) {
+            // Draw a number to see what it would look like when the app is done! :D
+            mPaint.setColor(Color.parseColor("#666666"));
+            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setTextSize(75);
+            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setFakeBoldText(true);
+            float textY = cell.y() * mCellWidth + mCellWidth / 2 - (mPaint.descent() + mPaint.ascent()) / 2;
+            float textX = cell.x() * mCellWidth + mCellWidth / 2;
+            canvas.drawText(Integer.toString(cell.value()), textX, textY, mPaint);
+        }
     }
 
     @Override
@@ -142,6 +151,11 @@ public class SudokuGrid extends View {
             int cellY = (int) (y / mCellWidth);
             mSelectedCell = new SudokuCell(cellX, cellY, 5);
             Log.d(TAG, "User touched cell: " + cellX + "," + cellY);
+
+            // Determine square
+            int squareX = (int) (x / (mCellWidth * 3));
+            int squareY = (int) (y / (mCellWidth * 3));
+            Log.d(TAG, "User touched square: " + squareX + "," + squareY);
             invalidate();
         }
         else {

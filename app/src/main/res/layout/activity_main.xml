@@ -11,6 +11,7 @@
     tools:context="com.codesheep.android.sudoku.MainActivity">
 
     <com.codesheep.android.sudoku.views.SudokuGrid
+        android:id="@+id/sudoku_grid"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

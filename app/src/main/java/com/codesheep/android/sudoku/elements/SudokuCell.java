@@ -7,6 +7,10 @@ public class SudokuCell {
     private int mY;
     private int mValue;
 
+    public SudokuCell(int x, int y) {
+        this(x, y, 0);
+    }
+
     public SudokuCell(int x, int y, int value) {
         mX = x;
         mY = y;
@@ -14,7 +18,11 @@ public class SudokuCell {
     }
 
     public int value() {
-        return 5;
+        return mValue;
+    }
+
+    public void value(int value) {
+        mValue = value;
     }
 
     public int x() {
